@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0f481e67106245afb5f0f52f7d4c7e7c" Name="Diagram1">
+        <EntityTypeShape EntityType="FitnesClubDbModel.Classes" Width="1.5" PointX="8.25" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.ClientMemberships" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.Clients" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.Employees" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.GroupClassBookings" Width="1.5" PointX="6" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.GroupClasses" Width="1.5" PointX="1.5" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.GroupClassSchedule" Width="1.5" PointX="3.75" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.MembershipFreezes" Width="1.5" PointX="8.25" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.MembershipTypes" Width="1.5" PointX="0.75" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.Payments" Width="1.5" PointX="8.25" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.PersonalTrainings" Width="1.5" PointX="10.5" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.Trainers" Width="1.5" PointX="8.25" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.TrainerSchedule" Width="1.5" PointX="10.5" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="FitnesClubDbModel.Visits" Width="1.5" PointX="12.75" PointY="6.75" IsExpanded="true" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_GroupClasses_Classes" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_PersonalTrainings_Classes" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_ClientMemberships_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_ClientMemberships_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_ClientMemberships_MembershipTypes" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_MembershipFreezes_ClientMemberships" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Payments_ClientMemberships" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_PersonalTrainings_ClientMemberships" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Visits_ClientMemberships" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_GroupClassBookings_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Payments_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_PersonalTrainings_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Visits_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_GroupClassBookings_CancelledBy" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_MembershipFreezes_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Payments_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Trainers_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_GroupClassBookings_GroupClassSchedule" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Visits_GroupClassBookings" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_GroupClasses_Trainers" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_GroupClassSchedule_GroupClasses" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_PersonalTrainings_Payments" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_PersonalTrainings_Trainers" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_Visits_PersonalTrainings" ManuallyRouted="false" />
+        <AssociationConnector Association="FitnesClubDbModel.FK_TrainerSchedule_Trainers" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

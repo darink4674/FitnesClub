@@ -1,0 +1,1671 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище FitnesClubDbModel" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Classes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Location" Type="nvarchar" MaxLength="100" />
+          <Property Name="Capacity" Type="int" Nullable="false" />
+          <Property Name="Area" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="HasEquipment" Type="bit" />
+          <Property Name="EquipmentList" Type="nvarchar(max)" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="ClientMemberships">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientId" Type="int" Nullable="false" />
+          <Property Name="MembershipTypeId" Type="int" Nullable="false" />
+          <Property Name="PurchaseDate" Type="datetime" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="RemainingVisits" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="20" />
+          <Property Name="FrozenDays" Type="int" />
+          <Property Name="FrozenUntil" Type="date" />
+          <Property Name="SoldBy" Type="int" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MiddleName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="BirthDate" Type="date" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="10" />
+          <Property Name="RegistrationDate" Type="datetime" />
+          <Property Name="HealthIssues" Type="nvarchar(max)" />
+          <Property Name="EmergencyContact" Type="nvarchar" MaxLength="20" />
+          <Property Name="Photo" Type="varbinary(max)" />
+          <Property Name="IsBlocked" Type="bit" />
+          <Property Name="BlockReason" Type="nvarchar" MaxLength="200" />
+          <Property Name="Notes" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Employees">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar(max)" />
+          <Property Name="MiddleName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="PassportData" Type="nvarchar" MaxLength="100" />
+          <Property Name="HireDate" Type="date" Nullable="false" />
+          <Property Name="BirthDate" Type="date" />
+          <Property Name="Position" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Salary" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Notes" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="GroupClassBookings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupClassScheduleId" Type="int" Nullable="false" />
+          <Property Name="ClientId" Type="int" Nullable="false" />
+          <Property Name="BookingDate" Type="date" Nullable="false" />
+          <Property Name="BookingTime" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="20" />
+          <Property Name="CancelledBy" Type="int" />
+          <Property Name="CancelledReason" Type="nvarchar" MaxLength="200" />
+          <Property Name="CheckInTime" Type="datetime" />
+          <Property Name="CheckOutTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="GroupClasses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="ClassId" Type="int" Nullable="false" />
+          <Property Name="TrainerId" Type="int" Nullable="false" />
+          <Property Name="Duration" Type="int" Nullable="false" />
+          <Property Name="Difficulty" Type="nvarchar" MaxLength="20" />
+          <Property Name="MaxParticipants" Type="int" Nullable="false" />
+          <Property Name="MinParticipants" Type="int" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="ColorCode" Type="nvarchar" MaxLength="7" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="GroupClassSchedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupClassId" Type="int" Nullable="false" />
+          <Property Name="DayOfWeek" Type="int" Nullable="false" />
+          <Property Name="StartTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="EndTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="IsRecurring" Type="bit" />
+          <Property Name="StartDate" Type="date" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="MembershipFreezes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientMembershipId" Type="int" Nullable="false" />
+          <Property Name="FreezeStartDate" Type="date" Nullable="false" />
+          <Property Name="FreezeEndDate" Type="date" Nullable="false" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="200" />
+          <Property Name="RequestedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="MembershipTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="DurationDays" Type="int" />
+          <Property Name="VisitCount" Type="int" />
+          <Property Name="TrainerType" Type="nvarchar" MaxLength="20" />
+          <Property Name="IsPersonalAllowed" Type="bit" />
+          <Property Name="IsGroupAllowed" Type="bit" />
+          <Property Name="HasPool" Type="bit" />
+          <Property Name="HasGym" Type="bit" />
+          <Property Name="FreezeDays" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Payments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientId" Type="int" Nullable="false" />
+          <Property Name="ClientMembershipId" Type="int" />
+          <Property Name="Amount" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="PaymentDate" Type="datetime" />
+          <Property Name="PaymentMethod" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PaymentStatus" Type="nvarchar" MaxLength="20" />
+          <Property Name="TransactionId" Type="nvarchar" MaxLength="100" />
+          <Property Name="ReceivedBy" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="PersonalTrainings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientId" Type="int" Nullable="false" />
+          <Property Name="TrainerId" Type="int" Nullable="false" />
+          <Property Name="ClassId" Type="int" Nullable="false" />
+          <Property Name="TrainingDate" Type="date" Nullable="false" />
+          <Property Name="StartTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="EndTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="20" />
+          <Property Name="ClientMembershipId" Type="int" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="PaymentId" Type="int" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="500" />
+          <Property Name="CheckInTime" Type="datetime" />
+          <Property Name="CheckOutTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Trainers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeId" Type="int" Nullable="false" />
+          <Property Name="Specialization" Type="nvarchar" MaxLength="200" />
+          <Property Name="TrainerType" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Experience" Type="int" />
+          <Property Name="Bio" Type="nvarchar(max)" />
+          <Property Name="Rating" Type="decimal" Precision="3" Scale="2" />
+          <Property Name="IsAvailableForPersonal" Type="bit" />
+          <Property Name="MaxPersonalClients" Type="int" />
+        </EntityType>
+        <EntityType Name="TrainerSchedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TrainerId" Type="int" Nullable="false" />
+          <Property Name="DayOfWeek" Type="int" Nullable="false" />
+          <Property Name="WorkStartTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="WorkEndTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="IsWorkingDay" Type="bit" />
+          <Property Name="BreakStartTime" Type="time" Precision="7" />
+          <Property Name="BreakEndTime" Type="time" Precision="7" />
+          <Property Name="ValidFrom" Type="date" Nullable="false" />
+          <Property Name="ValidTo" Type="date" />
+        </EntityType>
+        <EntityType Name="Visits">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientId" Type="int" Nullable="false" />
+          <Property Name="ClientMembershipId" Type="int" Nullable="false" />
+          <Property Name="VisitDate" Type="date" Nullable="false" />
+          <Property Name="CheckInTime" Type="datetime" Nullable="false" />
+          <Property Name="CheckOutTime" Type="datetime" />
+          <Property Name="VisitType" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="GroupClassBookingId" Type="int" />
+          <Property Name="PersonalTrainingId" Type="int" />
+          <Property Name="Duration" Type="int" />
+        </EntityType>
+        <Association Name="FK_ClientMemberships_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientMemberships">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientMemberships_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientMemberships">
+              <PropertyRef Name="SoldBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientMemberships_MembershipTypes">
+          <End Role="MembershipTypes" Type="Self.MembershipTypes" Multiplicity="1" />
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MembershipTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientMemberships">
+              <PropertyRef Name="MembershipTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassBookings_CancelledBy">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassBookings">
+              <PropertyRef Name="CancelledBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassBookings_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassBookings">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassBookings_GroupClassSchedule">
+          <End Role="GroupClassSchedule" Type="Self.GroupClassSchedule" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupClassSchedule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassBookings">
+              <PropertyRef Name="GroupClassScheduleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClasses_Classes">
+          <End Role="Classes" Type="Self.Classes" Multiplicity="1" />
+          <End Role="GroupClasses" Type="Self.GroupClasses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Classes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClasses">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClasses_Trainers">
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="1" />
+          <End Role="GroupClasses" Type="Self.GroupClasses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trainers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClasses">
+              <PropertyRef Name="TrainerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassSchedule_GroupClasses">
+          <End Role="GroupClasses" Type="Self.GroupClasses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GroupClassSchedule" Type="Self.GroupClassSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupClasses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassSchedule">
+              <PropertyRef Name="GroupClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MembershipFreezes_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MembershipFreezes" Type="Self.MembershipFreezes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MembershipFreezes">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MembershipFreezes_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="MembershipFreezes" Type="Self.MembershipFreezes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MembershipFreezes">
+              <PropertyRef Name="RequestedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="0..1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="ReceivedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Classes">
+          <End Role="Classes" Type="Self.Classes" Multiplicity="1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Classes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="0..1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Payments">
+          <End Role="Payments" Type="Self.Payments" Multiplicity="0..1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Payments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="PaymentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Trainers">
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trainers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="TrainerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trainers_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trainers">
+              <PropertyRef Name="EmployeeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrainerSchedule_Trainers">
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrainerSchedule" Type="Self.TrainerSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trainers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrainerSchedule">
+              <PropertyRef Name="TrainerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_GroupClassBookings">
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="0..1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupClassBookings">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="GroupClassBookingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_PersonalTrainings">
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="0..1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PersonalTrainings">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="PersonalTrainingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище FitnesClubDbModelContainer">
+          <EntitySet Name="Classes" EntityType="Self.Classes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientMemberships" EntityType="Self.ClientMemberships" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employees" EntityType="Self.Employees" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupClassBookings" EntityType="Self.GroupClassBookings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupClasses" EntityType="Self.GroupClasses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupClassSchedule" EntityType="Self.GroupClassSchedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MembershipFreezes" EntityType="Self.MembershipFreezes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MembershipTypes" EntityType="Self.MembershipTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payments" EntityType="Self.Payments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PersonalTrainings" EntityType="Self.PersonalTrainings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Trainers" EntityType="Self.Trainers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrainerSchedule" EntityType="Self.TrainerSchedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Visits" EntityType="Self.Visits" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ClientMemberships_Clients" Association="Self.FK_ClientMemberships_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientMemberships_Employees" Association="Self.FK_ClientMemberships_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientMemberships_MembershipTypes" Association="Self.FK_ClientMemberships_MembershipTypes">
+            <End Role="MembershipTypes" EntitySet="MembershipTypes" />
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassBookings_CancelledBy" Association="Self.FK_GroupClassBookings_CancelledBy">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassBookings_Clients" Association="Self.FK_GroupClassBookings_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassBookings_GroupClassSchedule" Association="Self.FK_GroupClassBookings_GroupClassSchedule">
+            <End Role="GroupClassSchedule" EntitySet="GroupClassSchedule" />
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClasses_Classes" Association="Self.FK_GroupClasses_Classes">
+            <End Role="Classes" EntitySet="Classes" />
+            <End Role="GroupClasses" EntitySet="GroupClasses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClasses_Trainers" Association="Self.FK_GroupClasses_Trainers">
+            <End Role="Trainers" EntitySet="Trainers" />
+            <End Role="GroupClasses" EntitySet="GroupClasses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassSchedule_GroupClasses" Association="Self.FK_GroupClassSchedule_GroupClasses">
+            <End Role="GroupClasses" EntitySet="GroupClasses" />
+            <End Role="GroupClassSchedule" EntitySet="GroupClassSchedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MembershipFreezes_ClientMemberships" Association="Self.FK_MembershipFreezes_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="MembershipFreezes" EntitySet="MembershipFreezes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MembershipFreezes_Employees" Association="Self.FK_MembershipFreezes_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="MembershipFreezes" EntitySet="MembershipFreezes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_ClientMemberships" Association="Self.FK_Payments_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_Clients" Association="Self.FK_Payments_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_Employees" Association="Self.FK_Payments_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Classes" Association="Self.FK_PersonalTrainings_Classes">
+            <End Role="Classes" EntitySet="Classes" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_ClientMemberships" Association="Self.FK_PersonalTrainings_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Clients" Association="Self.FK_PersonalTrainings_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Payments" Association="Self.FK_PersonalTrainings_Payments">
+            <End Role="Payments" EntitySet="Payments" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Trainers" Association="Self.FK_PersonalTrainings_Trainers">
+            <End Role="Trainers" EntitySet="Trainers" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trainers_Employees" Association="Self.FK_Trainers_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Trainers" EntitySet="Trainers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrainerSchedule_Trainers" Association="Self.FK_TrainerSchedule_Trainers">
+            <End Role="Trainers" EntitySet="Trainers" />
+            <End Role="TrainerSchedule" EntitySet="TrainerSchedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_ClientMemberships" Association="Self.FK_Visits_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_Clients" Association="Self.FK_Visits_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_GroupClassBookings" Association="Self.FK_Visits_GroupClassBookings">
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_PersonalTrainings" Association="Self.FK_Visits_PersonalTrainings">
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FitnesClubDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Classes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Capacity" Type="Int32" Nullable="false" />
+          <Property Name="Area" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="HasEquipment" Type="Boolean" />
+          <Property Name="EquipmentList" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="GroupClasses" Relationship="Self.FK_GroupClasses_Classes" FromRole="Classes" ToRole="GroupClasses" />
+          <NavigationProperty Name="PersonalTrainings" Relationship="Self.FK_PersonalTrainings_Classes" FromRole="Classes" ToRole="PersonalTrainings" />
+        </EntityType>
+        <EntityType Name="ClientMemberships">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientId" Type="Int32" Nullable="false" />
+          <Property Name="MembershipTypeId" Type="Int32" Nullable="false" />
+          <Property Name="PurchaseDate" Type="DateTime" Precision="3" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="RemainingVisits" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="FrozenDays" Type="Int32" />
+          <Property Name="FrozenUntil" Type="DateTime" Precision="0" />
+          <Property Name="SoldBy" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_ClientMemberships_Clients" FromRole="ClientMemberships" ToRole="Clients" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_ClientMemberships_Employees" FromRole="ClientMemberships" ToRole="Employees" />
+          <NavigationProperty Name="MembershipTypes" Relationship="Self.FK_ClientMemberships_MembershipTypes" FromRole="ClientMemberships" ToRole="MembershipTypes" />
+          <NavigationProperty Name="MembershipFreezes" Relationship="Self.FK_MembershipFreezes_ClientMemberships" FromRole="ClientMemberships" ToRole="MembershipFreezes" />
+          <NavigationProperty Name="Payments" Relationship="Self.FK_Payments_ClientMemberships" FromRole="ClientMemberships" ToRole="Payments" />
+          <NavigationProperty Name="PersonalTrainings" Relationship="Self.FK_PersonalTrainings_ClientMemberships" FromRole="ClientMemberships" ToRole="PersonalTrainings" />
+          <NavigationProperty Name="Visits" Relationship="Self.FK_Visits_ClientMemberships" FromRole="ClientMemberships" ToRole="Visits" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="HealthIssues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmergencyContact" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="IsBlocked" Type="Boolean" />
+          <Property Name="BlockReason" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ClientMemberships" Relationship="Self.FK_ClientMemberships_Clients" FromRole="Clients" ToRole="ClientMemberships" />
+          <NavigationProperty Name="GroupClassBookings" Relationship="Self.FK_GroupClassBookings_Clients" FromRole="Clients" ToRole="GroupClassBookings" />
+          <NavigationProperty Name="Payments" Relationship="Self.FK_Payments_Clients" FromRole="Clients" ToRole="Payments" />
+          <NavigationProperty Name="PersonalTrainings" Relationship="Self.FK_PersonalTrainings_Clients" FromRole="Clients" ToRole="PersonalTrainings" />
+          <NavigationProperty Name="Visits" Relationship="Self.FK_Visits_Clients" FromRole="Clients" ToRole="Visits" />
+        </EntityType>
+        <EntityType Name="Employees">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MiddleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PassportData" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="HireDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="Position" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Salary" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ClientMemberships" Relationship="Self.FK_ClientMemberships_Employees" FromRole="Employees" ToRole="ClientMemberships" />
+          <NavigationProperty Name="GroupClassBookings" Relationship="Self.FK_GroupClassBookings_CancelledBy" FromRole="Employees" ToRole="GroupClassBookings" />
+          <NavigationProperty Name="MembershipFreezes" Relationship="Self.FK_MembershipFreezes_Employees" FromRole="Employees" ToRole="MembershipFreezes" />
+          <NavigationProperty Name="Payments" Relationship="Self.FK_Payments_Employees" FromRole="Employees" ToRole="Payments" />
+          <NavigationProperty Name="Trainers" Relationship="Self.FK_Trainers_Employees" FromRole="Employees" ToRole="Trainers" />
+        </EntityType>
+        <EntityType Name="GroupClassBookings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupClassScheduleId" Type="Int32" Nullable="false" />
+          <Property Name="ClientId" Type="Int32" Nullable="false" />
+          <Property Name="BookingDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="BookingTime" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CancelledBy" Type="Int32" />
+          <Property Name="CancelledReason" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CheckInTime" Type="DateTime" Precision="3" />
+          <Property Name="CheckOutTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_GroupClassBookings_Clients" FromRole="GroupClassBookings" ToRole="Clients" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_GroupClassBookings_CancelledBy" FromRole="GroupClassBookings" ToRole="Employees" />
+          <NavigationProperty Name="GroupClassSchedule" Relationship="Self.FK_GroupClassBookings_GroupClassSchedule" FromRole="GroupClassBookings" ToRole="GroupClassSchedule" />
+          <NavigationProperty Name="Visits" Relationship="Self.FK_Visits_GroupClassBookings" FromRole="GroupClassBookings" ToRole="Visits" />
+        </EntityType>
+        <EntityType Name="GroupClasses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ClassId" Type="Int32" Nullable="false" />
+          <Property Name="TrainerId" Type="Int32" Nullable="false" />
+          <Property Name="Duration" Type="Int32" Nullable="false" />
+          <Property Name="Difficulty" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MaxParticipants" Type="Int32" Nullable="false" />
+          <Property Name="MinParticipants" Type="Int32" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ColorCode" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="Classes" Relationship="Self.FK_GroupClasses_Classes" FromRole="GroupClasses" ToRole="Classes" />
+          <NavigationProperty Name="Trainers" Relationship="Self.FK_GroupClasses_Trainers" FromRole="GroupClasses" ToRole="Trainers" />
+          <NavigationProperty Name="GroupClassSchedule" Relationship="Self.FK_GroupClassSchedule_GroupClasses" FromRole="GroupClasses" ToRole="GroupClassSchedule" />
+        </EntityType>
+        <EntityType Name="GroupClassSchedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupClassId" Type="Int32" Nullable="false" />
+          <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
+          <Property Name="StartTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="EndTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="IsRecurring" Type="Boolean" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="GroupClassBookings" Relationship="Self.FK_GroupClassBookings_GroupClassSchedule" FromRole="GroupClassSchedule" ToRole="GroupClassBookings" />
+          <NavigationProperty Name="GroupClasses" Relationship="Self.FK_GroupClassSchedule_GroupClasses" FromRole="GroupClassSchedule" ToRole="GroupClasses" />
+        </EntityType>
+        <EntityType Name="MembershipFreezes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientMembershipId" Type="Int32" Nullable="false" />
+          <Property Name="FreezeStartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="FreezeEndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Reason" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="RequestedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ClientMemberships" Relationship="Self.FK_MembershipFreezes_ClientMemberships" FromRole="MembershipFreezes" ToRole="ClientMemberships" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_MembershipFreezes_Employees" FromRole="MembershipFreezes" ToRole="Employees" />
+        </EntityType>
+        <EntityType Name="MembershipTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="DurationDays" Type="Int32" />
+          <Property Name="VisitCount" Type="Int32" />
+          <Property Name="TrainerType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IsPersonalAllowed" Type="Boolean" />
+          <Property Name="IsGroupAllowed" Type="Boolean" />
+          <Property Name="HasPool" Type="Boolean" />
+          <Property Name="HasGym" Type="Boolean" />
+          <Property Name="FreezeDays" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ClientMemberships" Relationship="Self.FK_ClientMemberships_MembershipTypes" FromRole="MembershipTypes" ToRole="ClientMemberships" />
+        </EntityType>
+        <EntityType Name="Payments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientId" Type="Int32" Nullable="false" />
+          <Property Name="ClientMembershipId" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="PaymentDate" Type="DateTime" Precision="3" />
+          <Property Name="PaymentMethod" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PaymentStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ReceivedBy" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ClientMemberships" Relationship="Self.FK_Payments_ClientMemberships" FromRole="Payments" ToRole="ClientMemberships" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_Payments_Clients" FromRole="Payments" ToRole="Clients" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_Payments_Employees" FromRole="Payments" ToRole="Employees" />
+          <NavigationProperty Name="PersonalTrainings" Relationship="Self.FK_PersonalTrainings_Payments" FromRole="Payments" ToRole="PersonalTrainings" />
+        </EntityType>
+        <EntityType Name="PersonalTrainings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientId" Type="Int32" Nullable="false" />
+          <Property Name="TrainerId" Type="Int32" Nullable="false" />
+          <Property Name="ClassId" Type="Int32" Nullable="false" />
+          <Property Name="TrainingDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="StartTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="EndTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ClientMembershipId" Type="Int32" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PaymentId" Type="Int32" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CheckInTime" Type="DateTime" Precision="3" />
+          <Property Name="CheckOutTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Classes" Relationship="Self.FK_PersonalTrainings_Classes" FromRole="PersonalTrainings" ToRole="Classes" />
+          <NavigationProperty Name="ClientMemberships" Relationship="Self.FK_PersonalTrainings_ClientMemberships" FromRole="PersonalTrainings" ToRole="ClientMemberships" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_PersonalTrainings_Clients" FromRole="PersonalTrainings" ToRole="Clients" />
+          <NavigationProperty Name="Payments" Relationship="Self.FK_PersonalTrainings_Payments" FromRole="PersonalTrainings" ToRole="Payments" />
+          <NavigationProperty Name="Trainers" Relationship="Self.FK_PersonalTrainings_Trainers" FromRole="PersonalTrainings" ToRole="Trainers" />
+          <NavigationProperty Name="Visits" Relationship="Self.FK_Visits_PersonalTrainings" FromRole="PersonalTrainings" ToRole="Visits" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Trainers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+          <Property Name="Specialization" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TrainerType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Experience" Type="Int32" />
+          <Property Name="Bio" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Rating" Type="Decimal" Precision="3" Scale="2" />
+          <Property Name="IsAvailableForPersonal" Type="Boolean" />
+          <Property Name="MaxPersonalClients" Type="Int32" />
+          <NavigationProperty Name="Employees" Relationship="Self.FK_Trainers_Employees" FromRole="Trainers" ToRole="Employees" />
+          <NavigationProperty Name="GroupClasses" Relationship="Self.FK_GroupClasses_Trainers" FromRole="Trainers" ToRole="GroupClasses" />
+          <NavigationProperty Name="PersonalTrainings" Relationship="Self.FK_PersonalTrainings_Trainers" FromRole="Trainers" ToRole="PersonalTrainings" />
+          <NavigationProperty Name="TrainerSchedule" Relationship="Self.FK_TrainerSchedule_Trainers" FromRole="Trainers" ToRole="TrainerSchedule" />
+        </EntityType>
+        <EntityType Name="TrainerSchedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TrainerId" Type="Int32" Nullable="false" />
+          <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
+          <Property Name="WorkStartTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="WorkEndTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="IsWorkingDay" Type="Boolean" />
+          <Property Name="BreakStartTime" Type="Time" Precision="7" />
+          <Property Name="BreakEndTime" Type="Time" Precision="7" />
+          <Property Name="ValidFrom" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ValidTo" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Trainers" Relationship="Self.FK_TrainerSchedule_Trainers" FromRole="TrainerSchedule" ToRole="Trainers" />
+        </EntityType>
+        <EntityType Name="Visits">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientId" Type="Int32" Nullable="false" />
+          <Property Name="ClientMembershipId" Type="Int32" Nullable="false" />
+          <Property Name="VisitDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CheckInTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CheckOutTime" Type="DateTime" Precision="3" />
+          <Property Name="VisitType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GroupClassBookingId" Type="Int32" />
+          <Property Name="PersonalTrainingId" Type="Int32" />
+          <Property Name="Duration" Type="Int32" />
+          <NavigationProperty Name="ClientMemberships" Relationship="Self.FK_Visits_ClientMemberships" FromRole="Visits" ToRole="ClientMemberships" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK_Visits_Clients" FromRole="Visits" ToRole="Clients" />
+          <NavigationProperty Name="GroupClassBookings" Relationship="Self.FK_Visits_GroupClassBookings" FromRole="Visits" ToRole="GroupClassBookings" />
+          <NavigationProperty Name="PersonalTrainings" Relationship="Self.FK_Visits_PersonalTrainings" FromRole="Visits" ToRole="PersonalTrainings" />
+        </EntityType>
+        <Association Name="FK_GroupClasses_Classes">
+          <End Role="Classes" Type="Self.Classes" Multiplicity="1" />
+          <End Role="GroupClasses" Type="Self.GroupClasses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Classes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClasses">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Classes">
+          <End Role="Classes" Type="Self.Classes" Multiplicity="1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Classes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientMemberships_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientMemberships">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientMemberships_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientMemberships">
+              <PropertyRef Name="SoldBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientMemberships_MembershipTypes">
+          <End Role="MembershipTypes" Type="Self.MembershipTypes" Multiplicity="1" />
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MembershipTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClientMemberships">
+              <PropertyRef Name="MembershipTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MembershipFreezes_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MembershipFreezes" Type="Self.MembershipFreezes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MembershipFreezes">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="0..1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="0..1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_ClientMemberships">
+          <End Role="ClientMemberships" Type="Self.ClientMemberships" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClientMemberships">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="ClientMembershipId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassBookings_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassBookings">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_Clients">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="ClientId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassBookings_CancelledBy">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassBookings">
+              <PropertyRef Name="CancelledBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MembershipFreezes_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="MembershipFreezes" Type="Self.MembershipFreezes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MembershipFreezes">
+              <PropertyRef Name="RequestedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Payments_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="ReceivedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trainers_Employees">
+          <End Role="Employees" Type="Self.Employees" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employees">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trainers">
+              <PropertyRef Name="EmployeeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassBookings_GroupClassSchedule">
+          <End Role="GroupClassSchedule" Type="Self.GroupClassSchedule" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupClassSchedule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassBookings">
+              <PropertyRef Name="GroupClassScheduleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_GroupClassBookings">
+          <End Role="GroupClassBookings" Type="Self.GroupClassBookings" Multiplicity="0..1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupClassBookings">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="GroupClassBookingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClasses_Trainers">
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="1" />
+          <End Role="GroupClasses" Type="Self.GroupClasses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trainers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClasses">
+              <PropertyRef Name="TrainerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupClassSchedule_GroupClasses">
+          <End Role="GroupClasses" Type="Self.GroupClasses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GroupClassSchedule" Type="Self.GroupClassSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupClasses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GroupClassSchedule">
+              <PropertyRef Name="GroupClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Payments">
+          <End Role="Payments" Type="Self.Payments" Multiplicity="0..1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Payments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="PaymentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PersonalTrainings_Trainers">
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="1" />
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trainers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PersonalTrainings">
+              <PropertyRef Name="TrainerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Visits_PersonalTrainings">
+          <End Role="PersonalTrainings" Type="Self.PersonalTrainings" Multiplicity="0..1" />
+          <End Role="Visits" Type="Self.Visits" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PersonalTrainings">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Visits">
+              <PropertyRef Name="PersonalTrainingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrainerSchedule_Trainers">
+          <End Role="Trainers" Type="Self.Trainers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrainerSchedule" Type="Self.TrainerSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trainers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TrainerSchedule">
+              <PropertyRef Name="TrainerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FitnesClubDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Classes" EntityType="Self.Classes" />
+          <EntitySet Name="ClientMemberships" EntityType="Self.ClientMemberships" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" />
+          <EntitySet Name="Employees" EntityType="Self.Employees" />
+          <EntitySet Name="GroupClassBookings" EntityType="Self.GroupClassBookings" />
+          <EntitySet Name="GroupClasses" EntityType="Self.GroupClasses" />
+          <EntitySet Name="GroupClassSchedule" EntityType="Self.GroupClassSchedule" />
+          <EntitySet Name="MembershipFreezes" EntityType="Self.MembershipFreezes" />
+          <EntitySet Name="MembershipTypes" EntityType="Self.MembershipTypes" />
+          <EntitySet Name="Payments" EntityType="Self.Payments" />
+          <EntitySet Name="PersonalTrainings" EntityType="Self.PersonalTrainings" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Trainers" EntityType="Self.Trainers" />
+          <EntitySet Name="TrainerSchedule" EntityType="Self.TrainerSchedule" />
+          <EntitySet Name="Visits" EntityType="Self.Visits" />
+          <AssociationSet Name="FK_GroupClasses_Classes" Association="Self.FK_GroupClasses_Classes">
+            <End Role="Classes" EntitySet="Classes" />
+            <End Role="GroupClasses" EntitySet="GroupClasses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Classes" Association="Self.FK_PersonalTrainings_Classes">
+            <End Role="Classes" EntitySet="Classes" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientMemberships_Clients" Association="Self.FK_ClientMemberships_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientMemberships_Employees" Association="Self.FK_ClientMemberships_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientMemberships_MembershipTypes" Association="Self.FK_ClientMemberships_MembershipTypes">
+            <End Role="MembershipTypes" EntitySet="MembershipTypes" />
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MembershipFreezes_ClientMemberships" Association="Self.FK_MembershipFreezes_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="MembershipFreezes" EntitySet="MembershipFreezes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_ClientMemberships" Association="Self.FK_Payments_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_ClientMemberships" Association="Self.FK_PersonalTrainings_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_ClientMemberships" Association="Self.FK_Visits_ClientMemberships">
+            <End Role="ClientMemberships" EntitySet="ClientMemberships" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassBookings_Clients" Association="Self.FK_GroupClassBookings_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_Clients" Association="Self.FK_Payments_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Clients" Association="Self.FK_PersonalTrainings_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_Clients" Association="Self.FK_Visits_Clients">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassBookings_CancelledBy" Association="Self.FK_GroupClassBookings_CancelledBy">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MembershipFreezes_Employees" Association="Self.FK_MembershipFreezes_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="MembershipFreezes" EntitySet="MembershipFreezes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Payments_Employees" Association="Self.FK_Payments_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trainers_Employees" Association="Self.FK_Trainers_Employees">
+            <End Role="Employees" EntitySet="Employees" />
+            <End Role="Trainers" EntitySet="Trainers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassBookings_GroupClassSchedule" Association="Self.FK_GroupClassBookings_GroupClassSchedule">
+            <End Role="GroupClassSchedule" EntitySet="GroupClassSchedule" />
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_GroupClassBookings" Association="Self.FK_Visits_GroupClassBookings">
+            <End Role="GroupClassBookings" EntitySet="GroupClassBookings" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClasses_Trainers" Association="Self.FK_GroupClasses_Trainers">
+            <End Role="Trainers" EntitySet="Trainers" />
+            <End Role="GroupClasses" EntitySet="GroupClasses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupClassSchedule_GroupClasses" Association="Self.FK_GroupClassSchedule_GroupClasses">
+            <End Role="GroupClasses" EntitySet="GroupClasses" />
+            <End Role="GroupClassSchedule" EntitySet="GroupClassSchedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Payments" Association="Self.FK_PersonalTrainings_Payments">
+            <End Role="Payments" EntitySet="Payments" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PersonalTrainings_Trainers" Association="Self.FK_PersonalTrainings_Trainers">
+            <End Role="Trainers" EntitySet="Trainers" />
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Visits_PersonalTrainings" Association="Self.FK_Visits_PersonalTrainings">
+            <End Role="PersonalTrainings" EntitySet="PersonalTrainings" />
+            <End Role="Visits" EntitySet="Visits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrainerSchedule_Trainers" Association="Self.FK_TrainerSchedule_Trainers">
+            <End Role="Trainers" EntitySet="Trainers" />
+            <End Role="TrainerSchedule" EntitySet="TrainerSchedule" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище FitnesClubDbModelContainer" CdmEntityContainer="FitnesClubDbEntities">
+          <EntitySetMapping Name="Classes">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.Classes">
+              <MappingFragment StoreEntitySet="Classes">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Capacity" ColumnName="Capacity" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="HasEquipment" ColumnName="HasEquipment" />
+                <ScalarProperty Name="EquipmentList" ColumnName="EquipmentList" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientMemberships">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.ClientMemberships">
+              <MappingFragment StoreEntitySet="ClientMemberships">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+                <ScalarProperty Name="MembershipTypeId" ColumnName="MembershipTypeId" />
+                <ScalarProperty Name="PurchaseDate" ColumnName="PurchaseDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="RemainingVisits" ColumnName="RemainingVisits" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FrozenDays" ColumnName="FrozenDays" />
+                <ScalarProperty Name="FrozenUntil" ColumnName="FrozenUntil" />
+                <ScalarProperty Name="SoldBy" ColumnName="SoldBy" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.Clients">
+              <MappingFragment StoreEntitySet="Clients">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="HealthIssues" ColumnName="HealthIssues" />
+                <ScalarProperty Name="EmergencyContact" ColumnName="EmergencyContact" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="IsBlocked" ColumnName="IsBlocked" />
+                <ScalarProperty Name="BlockReason" ColumnName="BlockReason" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employees">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.Employees">
+              <MappingFragment StoreEntitySet="Employees">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PassportData" ColumnName="PassportData" />
+                <ScalarProperty Name="HireDate" ColumnName="HireDate" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupClassBookings">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.GroupClassBookings">
+              <MappingFragment StoreEntitySet="GroupClassBookings">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupClassScheduleId" ColumnName="GroupClassScheduleId" />
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+                <ScalarProperty Name="BookingDate" ColumnName="BookingDate" />
+                <ScalarProperty Name="BookingTime" ColumnName="BookingTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CancelledBy" ColumnName="CancelledBy" />
+                <ScalarProperty Name="CancelledReason" ColumnName="CancelledReason" />
+                <ScalarProperty Name="CheckInTime" ColumnName="CheckInTime" />
+                <ScalarProperty Name="CheckOutTime" ColumnName="CheckOutTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupClasses">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.GroupClasses">
+              <MappingFragment StoreEntitySet="GroupClasses">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ClassId" ColumnName="ClassId" />
+                <ScalarProperty Name="TrainerId" ColumnName="TrainerId" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="Difficulty" ColumnName="Difficulty" />
+                <ScalarProperty Name="MaxParticipants" ColumnName="MaxParticipants" />
+                <ScalarProperty Name="MinParticipants" ColumnName="MinParticipants" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="ColorCode" ColumnName="ColorCode" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupClassSchedule">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.GroupClassSchedule">
+              <MappingFragment StoreEntitySet="GroupClassSchedule">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupClassId" ColumnName="GroupClassId" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="IsRecurring" ColumnName="IsRecurring" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MembershipFreezes">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.MembershipFreezes">
+              <MappingFragment StoreEntitySet="MembershipFreezes">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ClientMembershipId" ColumnName="ClientMembershipId" />
+                <ScalarProperty Name="FreezeStartDate" ColumnName="FreezeStartDate" />
+                <ScalarProperty Name="FreezeEndDate" ColumnName="FreezeEndDate" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="RequestedBy" ColumnName="RequestedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MembershipTypes">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.MembershipTypes">
+              <MappingFragment StoreEntitySet="MembershipTypes">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="DurationDays" ColumnName="DurationDays" />
+                <ScalarProperty Name="VisitCount" ColumnName="VisitCount" />
+                <ScalarProperty Name="TrainerType" ColumnName="TrainerType" />
+                <ScalarProperty Name="IsPersonalAllowed" ColumnName="IsPersonalAllowed" />
+                <ScalarProperty Name="IsGroupAllowed" ColumnName="IsGroupAllowed" />
+                <ScalarProperty Name="HasPool" ColumnName="HasPool" />
+                <ScalarProperty Name="HasGym" ColumnName="HasGym" />
+                <ScalarProperty Name="FreezeDays" ColumnName="FreezeDays" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payments">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.Payments">
+              <MappingFragment StoreEntitySet="Payments">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+                <ScalarProperty Name="ClientMembershipId" ColumnName="ClientMembershipId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="ReceivedBy" ColumnName="ReceivedBy" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PersonalTrainings">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.PersonalTrainings">
+              <MappingFragment StoreEntitySet="PersonalTrainings">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+                <ScalarProperty Name="TrainerId" ColumnName="TrainerId" />
+                <ScalarProperty Name="ClassId" ColumnName="ClassId" />
+                <ScalarProperty Name="TrainingDate" ColumnName="TrainingDate" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ClientMembershipId" ColumnName="ClientMembershipId" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="PaymentId" ColumnName="PaymentId" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="CheckInTime" ColumnName="CheckInTime" />
+                <ScalarProperty Name="CheckOutTime" ColumnName="CheckOutTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Trainers">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.Trainers">
+              <MappingFragment StoreEntitySet="Trainers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Specialization" ColumnName="Specialization" />
+                <ScalarProperty Name="TrainerType" ColumnName="TrainerType" />
+                <ScalarProperty Name="Experience" ColumnName="Experience" />
+                <ScalarProperty Name="Bio" ColumnName="Bio" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="IsAvailableForPersonal" ColumnName="IsAvailableForPersonal" />
+                <ScalarProperty Name="MaxPersonalClients" ColumnName="MaxPersonalClients" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrainerSchedule">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.TrainerSchedule">
+              <MappingFragment StoreEntitySet="TrainerSchedule">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TrainerId" ColumnName="TrainerId" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+                <ScalarProperty Name="WorkStartTime" ColumnName="WorkStartTime" />
+                <ScalarProperty Name="WorkEndTime" ColumnName="WorkEndTime" />
+                <ScalarProperty Name="IsWorkingDay" ColumnName="IsWorkingDay" />
+                <ScalarProperty Name="BreakStartTime" ColumnName="BreakStartTime" />
+                <ScalarProperty Name="BreakEndTime" ColumnName="BreakEndTime" />
+                <ScalarProperty Name="ValidFrom" ColumnName="ValidFrom" />
+                <ScalarProperty Name="ValidTo" ColumnName="ValidTo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Visits">
+            <EntityTypeMapping TypeName="FitnesClubDbModel.Visits">
+              <MappingFragment StoreEntitySet="Visits">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+                <ScalarProperty Name="ClientMembershipId" ColumnName="ClientMembershipId" />
+                <ScalarProperty Name="VisitDate" ColumnName="VisitDate" />
+                <ScalarProperty Name="CheckInTime" ColumnName="CheckInTime" />
+                <ScalarProperty Name="CheckOutTime" ColumnName="CheckOutTime" />
+                <ScalarProperty Name="VisitType" ColumnName="VisitType" />
+                <ScalarProperty Name="GroupClassBookingId" ColumnName="GroupClassBookingId" />
+                <ScalarProperty Name="PersonalTrainingId" ColumnName="PersonalTrainingId" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
