@@ -1,0 +1,697 @@
+USE [FitnesClubDb]
+GO
+/****** Object:  Table [dbo].[Clients]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Clients](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [nvarchar](50) NOT NULL,
+	[LastName] [nvarchar](50) NOT NULL,
+	[MiddleName] [nvarchar](50) NULL,
+	[Phone] [nvarchar](20) NOT NULL,
+	[Email] [nvarchar](100) NULL,
+	[BirthDate] [date] NULL,
+	[Gender] [nvarchar](10) NULL,
+	[RegistrationDate] [datetime] NULL,
+	[HealthIssues] [nvarchar](max) NULL,
+	[EmergencyContact] [nvarchar](20) NULL,
+	[Photo] [varbinary](max) NULL,
+	[IsBlocked] [bit] NULL,
+	[BlockReason] [nvarchar](200) NULL,
+	[Notes] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MembershipTypes]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MembershipTypes](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[Price] [decimal](10, 2) NOT NULL,
+	[DurationDays] [int] NULL,
+	[VisitCount] [int] NULL,
+	[TrainerType] [nvarchar](20) NULL,
+	[IsPersonalAllowed] [bit] NULL,
+	[IsGroupAllowed] [bit] NULL,
+	[HasPool] [bit] NULL,
+	[HasGym] [bit] NULL,
+	[FreezeDays] [int] NULL,
+	[IsActive] [bit] NULL,
+	[CreatedDate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ClientMemberships]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ClientMemberships](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClientId] [int] NOT NULL,
+	[MembershipTypeId] [int] NOT NULL,
+	[PurchaseDate] [datetime] NULL,
+	[StartDate] [date] NOT NULL,
+	[EndDate] [date] NOT NULL,
+	[Price] [decimal](10, 2) NOT NULL,
+	[RemainingVisits] [int] NULL,
+	[Status] [nvarchar](20) NULL,
+	[FrozenDays] [int] NULL,
+	[FrozenUntil] [date] NULL,
+	[SoldBy] [int] NOT NULL,
+	[Notes] [nvarchar](500) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_ActiveMemberships]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[vw_ActiveMemberships] AS
+SELECT 
+    cm.Id,
+    c.Id AS ClientId,
+    c.LastName + ' ' + c.FirstName AS ClientName,
+    c.Phone,
+    mt.Name AS MembershipName,
+    cm.StartDate,
+    cm.EndDate,
+    cm.RemainingVisits,
+    DATEDIFF(day, GETDATE(), cm.EndDate) AS DaysRemaining
+FROM ClientMemberships cm
+INNER JOIN Clients c ON cm.ClientId = c.Id
+INNER JOIN MembershipTypes mt ON cm.MembershipTypeId = mt.Id
+WHERE cm.Status = 'Active' 
+  AND cm.StartDate <= CAST(GETDATE() AS DATE)
+  AND cm.EndDate >= CAST(GETDATE() AS DATE);
+
+-- Ежедневная выручка
+GO
+/****** Object:  Table [dbo].[Payments]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Payments](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClientId] [int] NOT NULL,
+	[ClientMembershipId] [int] NULL,
+	[Amount] [decimal](10, 2) NOT NULL,
+	[PaymentDate] [datetime] NULL,
+	[PaymentMethod] [nvarchar](20) NOT NULL,
+	[PaymentStatus] [nvarchar](20) NULL,
+	[TransactionId] [nvarchar](100) NULL,
+	[ReceivedBy] [int] NOT NULL,
+	[Description] [nvarchar](500) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_DailyRevenue]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[vw_DailyRevenue] AS
+SELECT 
+    CAST(PaymentDate AS DATE) AS PaymentDay,
+    PaymentMethod,
+    COUNT(*) AS TransactionsCount,
+    SUM(Amount) AS TotalAmount
+FROM Payments
+WHERE PaymentStatus = 'Completed'
+GROUP BY CAST(PaymentDate AS DATE), PaymentMethod;
+
+-- Расписание тренеров
+GO
+/****** Object:  Table [dbo].[Employees]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Employees](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [nvarchar](50) NOT NULL,
+	[LastName] [nvarchar](50) NOT NULL,
+	[Password] [nvarchar](max) NULL,
+	[MiddleName] [nvarchar](50) NULL,
+	[Phone] [nvarchar](20) NULL,
+	[Email] [nvarchar](100) NULL,
+	[PassportData] [nvarchar](100) NULL,
+	[HireDate] [date] NOT NULL,
+	[BirthDate] [date] NULL,
+	[Position] [nvarchar](50) NOT NULL,
+	[Salary] [decimal](10, 2) NULL,
+	[IsActive] [bit] NULL,
+	[Notes] [nvarchar](max) NULL,
+ CONSTRAINT [PK__Employee__3214EC07B0688D39] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Trainers]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Trainers](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[EmployeeId] [int] NOT NULL,
+	[Specialization] [nvarchar](200) NULL,
+	[TrainerType] [nvarchar](20) NOT NULL,
+	[Experience] [int] NULL,
+	[Bio] [nvarchar](max) NULL,
+	[Rating] [decimal](3, 2) NULL,
+	[IsAvailableForPersonal] [bit] NULL,
+	[MaxPersonalClients] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TrainerSchedule]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TrainerSchedule](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[TrainerId] [int] NOT NULL,
+	[DayOfWeek] [int] NOT NULL,
+	[WorkStartTime] [time](7) NOT NULL,
+	[WorkEndTime] [time](7) NOT NULL,
+	[IsWorkingDay] [bit] NULL,
+	[BreakStartTime] [time](7) NULL,
+	[BreakEndTime] [time](7) NULL,
+	[ValidFrom] [date] NOT NULL,
+	[ValidTo] [date] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_TrainerSchedule]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[vw_TrainerSchedule] AS
+SELECT 
+    e.LastName + ' ' + e.FirstName AS TrainerName,
+    t.TrainerType,
+    t.Specialization,
+    ts.DayOfWeek,
+    CASE ts.DayOfWeek
+        WHEN 1 THEN 'Понедельник'
+        WHEN 2 THEN 'Вторник'
+        WHEN 3 THEN 'Среда'
+        WHEN 4 THEN 'Четверг'
+        WHEN 5 THEN 'Пятница'
+        WHEN 6 THEN 'Суббота'
+        WHEN 7 THEN 'Воскресенье'
+    END AS DayName,
+    ts.WorkStartTime,
+    ts.WorkEndTime,
+    ts.BreakStartTime,
+    ts.BreakEndTime,
+    ts.IsWorkingDay
+FROM TrainerSchedule ts
+INNER JOIN Trainers t ON ts.TrainerId = t.Id
+INNER JOIN Employees e ON t.EmployeeId = e.Id
+WHERE (ts.ValidTo IS NULL OR ts.ValidTo >= CAST(GETDATE() AS DATE))
+  AND ts.ValidFrom <= CAST(GETDATE() AS DATE);
+
+-- ==============================================
+-- ТОЛЬКО ОДИН ТРИГГЕР (самый нужный)
+-- ==============================================
+GO
+/****** Object:  Table [dbo].[Classes]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Classes](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[Location] [nvarchar](100) NULL,
+	[Capacity] [int] NOT NULL,
+	[Area] [decimal](8, 2) NULL,
+	[HasEquipment] [bit] NULL,
+	[EquipmentList] [nvarchar](max) NULL,
+	[IsActive] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GroupClassBookings]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GroupClassBookings](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[GroupClassScheduleId] [int] NOT NULL,
+	[ClientId] [int] NOT NULL,
+	[BookingDate] [date] NOT NULL,
+	[BookingTime] [datetime] NULL,
+	[Status] [nvarchar](20) NULL,
+	[CancelledBy] [int] NULL,
+	[CancelledReason] [nvarchar](200) NULL,
+	[CheckInTime] [datetime] NULL,
+	[CheckOutTime] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GroupClasses]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GroupClasses](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[ClassId] [int] NOT NULL,
+	[TrainerId] [int] NOT NULL,
+	[Duration] [int] NOT NULL,
+	[Difficulty] [nvarchar](20) NULL,
+	[MaxParticipants] [int] NOT NULL,
+	[MinParticipants] [int] NULL,
+	[Price] [decimal](10, 2) NULL,
+	[ColorCode] [nvarchar](7) NULL,
+	[IsActive] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GroupClassSchedule]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GroupClassSchedule](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[GroupClassId] [int] NOT NULL,
+	[DayOfWeek] [int] NOT NULL,
+	[StartTime] [time](7) NOT NULL,
+	[EndTime] [time](7) NOT NULL,
+	[IsRecurring] [bit] NULL,
+	[StartDate] [date] NULL,
+	[IsActive] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MembershipFreezes]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MembershipFreezes](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClientMembershipId] [int] NOT NULL,
+	[FreezeStartDate] [date] NOT NULL,
+	[FreezeEndDate] [date] NOT NULL,
+	[Reason] [nvarchar](200) NULL,
+	[RequestedBy] [int] NOT NULL,
+	[CreatedDate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PersonalTrainings]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PersonalTrainings](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClientId] [int] NOT NULL,
+	[TrainerId] [int] NOT NULL,
+	[ClassId] [int] NOT NULL,
+	[TrainingDate] [date] NOT NULL,
+	[StartTime] [time](7) NOT NULL,
+	[EndTime] [time](7) NOT NULL,
+	[Status] [nvarchar](20) NULL,
+	[ClientMembershipId] [int] NULL,
+	[Price] [decimal](10, 2) NULL,
+	[PaymentId] [int] NULL,
+	[Notes] [nvarchar](500) NULL,
+	[CheckInTime] [datetime] NULL,
+	[CheckOutTime] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Visits]    Script Date: 03.03.2026 23:37:02 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Visits](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[ClientId] [int] NOT NULL,
+	[ClientMembershipId] [int] NOT NULL,
+	[VisitDate] [date] NOT NULL,
+	[CheckInTime] [datetime] NOT NULL,
+	[CheckOutTime] [datetime] NULL,
+	[VisitType] [nvarchar](20) NOT NULL,
+	[GroupClassBookingId] [int] NULL,
+	[PersonalTrainingId] [int] NULL,
+	[Duration] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[Classes] ON 
+
+INSERT [dbo].[Classes] ([Id], [Name], [Location], [Capacity], [Area], [HasEquipment], [EquipmentList], [IsActive]) VALUES (1, N'Тренажерный зал', N'1 этаж', 30, NULL, 1, NULL, 1)
+INSERT [dbo].[Classes] ([Id], [Name], [Location], [Capacity], [Area], [HasEquipment], [EquipmentList], [IsActive]) VALUES (2, N'Зал аэробики', N'2 этаж', 20, NULL, 1, NULL, 1)
+SET IDENTITY_INSERT [dbo].[Classes] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Clients] ON 
+
+INSERT [dbo].[Clients] ([Id], [FirstName], [LastName], [MiddleName], [Phone], [Email], [BirthDate], [Gender], [RegistrationDate], [HealthIssues], [EmergencyContact], [Photo], [IsBlocked], [BlockReason], [Notes]) VALUES (1, N'Алексей', N'Алексеев', NULL, N'+79007778899', N'alekseev@mail.ru', CAST(N'1990-05-15' AS Date), N'Male', CAST(N'2026-03-03T19:29:15.907' AS DateTime), NULL, NULL, NULL, 0, NULL, NULL)
+INSERT [dbo].[Clients] ([Id], [FirstName], [LastName], [MiddleName], [Phone], [Email], [BirthDate], [Gender], [RegistrationDate], [HealthIssues], [EmergencyContact], [Photo], [IsBlocked], [BlockReason], [Notes]) VALUES (2, N'Елена', N'Еленова', NULL, N'+79008889900', N'elenova@mail.ru', CAST(N'1985-08-22' AS Date), N'Female', CAST(N'2026-03-03T19:29:15.907' AS DateTime), NULL, NULL, NULL, 0, NULL, NULL)
+SET IDENTITY_INSERT [dbo].[Clients] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Employees] ON 
+
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (1, N'Иван', N'Иванов', N'12345', N'Сергеевич', N'+79001234567', N'12345', NULL, CAST(N'2023-01-15' AS Date), CAST(N'2006-09-15' AS Date), N'Administrator', CAST(50000.00 AS Decimal(10, 2)), 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (2, N'Петр', N'Петров', N'56789', N'Сергеевич', N'+79007654321', N'petrov@fitness.ru', NULL, CAST(N'2023-02-01' AS Date), CAST(N'2006-09-15' AS Date), N'Manager', CAST(60000.00 AS Decimal(10, 2)), 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (3, N'Мария', N'Сидорова', N'98765', N'Сергеевна', N'+79001112233', N'sidorova@fitness.ru', NULL, CAST(N'2023-01-20' AS Date), CAST(N'2006-09-15' AS Date), N'Trainer', CAST(45000.00 AS Decimal(10, 2)), 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (4, N'Анна', N'Козлова', N'654321', N'Сергеевна', N'+79003334455', N'kozlova@fitness.ru', NULL, CAST(N'2023-03-10' AS Date), CAST(N'2006-09-15' AS Date), N'Trainer', CAST(45000.00 AS Decimal(10, 2)), 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (5, N'ggg', N'ggg', N'123456789', N'ggg', N'5745456', N'ggg', N'876849843', CAST(N'2026-03-03' AS Date), NULL, N'Trainer', NULL, 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (6, N'ggggggggg', N'gggggggggg', N'1234567', N'ggggggggg', N'6666666', N'fffffff', N'5555555', CAST(N'2026-03-03' AS Date), CAST(N'2025-04-03' AS Date), N'Trainer', CAST(70000.00 AS Decimal(10, 2)), 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (7, N'пппппп', N'пппппппп', N'66666', N'ппппппп', N'6666666', N'rerifeoje', N'66666', CAST(N'2026-03-03' AS Date), CAST(N'2006-09-15' AS Date), N'Trainer', CAST(55555.00 AS Decimal(10, 2)), 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (8, N'рррррррр', N'ррррррр', N'7777777', N'рррррррр', N'7777777777', N'rfrrrrrrrrrrrr', N'555555', CAST(N'2026-03-03' AS Date), CAST(N'2026-02-23' AS Date), N'Trainer', CAST(78000.00 AS Decimal(10, 2)), 1, NULL)
+INSERT [dbo].[Employees] ([Id], [FirstName], [LastName], [Password], [MiddleName], [Phone], [Email], [PassportData], [HireDate], [BirthDate], [Position], [Salary], [IsActive], [Notes]) VALUES (9, N'пппппп2', N'пппппп2', N'11111', N'пппп2', N'44444', N'ffffff@g', N'5555', CAST(N'2026-03-03' AS Date), CAST(N'2026-03-03' AS Date), N'Trainer', CAST(50000.00 AS Decimal(10, 2)), 1, NULL)
+SET IDENTITY_INSERT [dbo].[Employees] OFF
+GO
+SET IDENTITY_INSERT [dbo].[GroupClasses] ON 
+
+INSERT [dbo].[GroupClasses] ([Id], [Name], [Description], [ClassId], [TrainerId], [Duration], [Difficulty], [MaxParticipants], [MinParticipants], [Price], [ColorCode], [IsActive]) VALUES (1, N'Йога', NULL, 2, 1, 60, N'Beginner', 15, 1, NULL, NULL, 1)
+INSERT [dbo].[GroupClasses] ([Id], [Name], [Description], [ClassId], [TrainerId], [Duration], [Difficulty], [MaxParticipants], [MinParticipants], [Price], [ColorCode], [IsActive]) VALUES (2, N'Степ', NULL, 2, 2, 45, N'Intermediate', 20, 1, NULL, NULL, 1)
+SET IDENTITY_INSERT [dbo].[GroupClasses] OFF
+GO
+SET IDENTITY_INSERT [dbo].[GroupClassSchedule] ON 
+
+INSERT [dbo].[GroupClassSchedule] ([Id], [GroupClassId], [DayOfWeek], [StartTime], [EndTime], [IsRecurring], [StartDate], [IsActive]) VALUES (1, 1, 1, CAST(N'10:00:00' AS Time), CAST(N'11:00:00' AS Time), 1, NULL, 1)
+INSERT [dbo].[GroupClassSchedule] ([Id], [GroupClassId], [DayOfWeek], [StartTime], [EndTime], [IsRecurring], [StartDate], [IsActive]) VALUES (2, 1, 3, CAST(N'18:00:00' AS Time), CAST(N'19:00:00' AS Time), 1, NULL, 1)
+INSERT [dbo].[GroupClassSchedule] ([Id], [GroupClassId], [DayOfWeek], [StartTime], [EndTime], [IsRecurring], [StartDate], [IsActive]) VALUES (3, 2, 2, CAST(N'19:00:00' AS Time), CAST(N'19:45:00' AS Time), 1, NULL, 1)
+SET IDENTITY_INSERT [dbo].[GroupClassSchedule] OFF
+GO
+SET IDENTITY_INSERT [dbo].[MembershipTypes] ON 
+
+INSERT [dbo].[MembershipTypes] ([Id], [Name], [Description], [Price], [DurationDays], [VisitCount], [TrainerType], [IsPersonalAllowed], [IsGroupAllowed], [HasPool], [HasGym], [FreezeDays], [IsActive], [CreatedDate]) VALUES (1, N'Безлимитный', N'Безлимит на месяц', CAST(5000.00 AS Decimal(10, 2)), 30, NULL, NULL, 1, 1, 0, 1, 7, 1, CAST(N'2026-03-03T19:29:15.907' AS DateTime))
+INSERT [dbo].[MembershipTypes] ([Id], [Name], [Description], [Price], [DurationDays], [VisitCount], [TrainerType], [IsPersonalAllowed], [IsGroupAllowed], [HasPool], [HasGym], [FreezeDays], [IsActive], [CreatedDate]) VALUES (2, N'8 занятий', N'8 тренировок', CAST(3000.00 AS Decimal(10, 2)), 30, 8, NULL, 1, 1, 0, 1, 0, 1, CAST(N'2026-03-03T19:29:15.907' AS DateTime))
+SET IDENTITY_INSERT [dbo].[MembershipTypes] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Trainers] ON 
+
+INSERT [dbo].[Trainers] ([Id], [EmployeeId], [Specialization], [TrainerType], [Experience], [Bio], [Rating], [IsAvailableForPersonal], [MaxPersonalClients]) VALUES (1, 3, N'Йога, Пилатес', N'Both', 5, NULL, CAST(0.00 AS Decimal(3, 2)), 1, 10)
+INSERT [dbo].[Trainers] ([Id], [EmployeeId], [Specialization], [TrainerType], [Experience], [Bio], [Rating], [IsAvailableForPersonal], [MaxPersonalClients]) VALUES (2, 4, N'Степ-аэробика, Zumba', N'Group', 3, NULL, CAST(0.00 AS Decimal(3, 2)), 0, 10)
+INSERT [dbo].[Trainers] ([Id], [EmployeeId], [Specialization], [TrainerType], [Experience], [Bio], [Rating], [IsAvailableForPersonal], [MaxPersonalClients]) VALUES (3, 9, NULL, N'Both', NULL, NULL, CAST(0.00 AS Decimal(3, 2)), 1, 10)
+SET IDENTITY_INSERT [dbo].[Trainers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[TrainerSchedule] ON 
+
+INSERT [dbo].[TrainerSchedule] ([Id], [TrainerId], [DayOfWeek], [WorkStartTime], [WorkEndTime], [IsWorkingDay], [BreakStartTime], [BreakEndTime], [ValidFrom], [ValidTo]) VALUES (1, 1, 1, CAST(N'09:00:00' AS Time), CAST(N'18:00:00' AS Time), 1, NULL, NULL, CAST(N'2024-01-01' AS Date), NULL)
+INSERT [dbo].[TrainerSchedule] ([Id], [TrainerId], [DayOfWeek], [WorkStartTime], [WorkEndTime], [IsWorkingDay], [BreakStartTime], [BreakEndTime], [ValidFrom], [ValidTo]) VALUES (2, 1, 2, CAST(N'09:00:00' AS Time), CAST(N'18:00:00' AS Time), 1, NULL, NULL, CAST(N'2024-01-01' AS Date), NULL)
+INSERT [dbo].[TrainerSchedule] ([Id], [TrainerId], [DayOfWeek], [WorkStartTime], [WorkEndTime], [IsWorkingDay], [BreakStartTime], [BreakEndTime], [ValidFrom], [ValidTo]) VALUES (3, 1, 3, CAST(N'09:00:00' AS Time), CAST(N'18:00:00' AS Time), 1, NULL, NULL, CAST(N'2024-01-01' AS Date), NULL)
+INSERT [dbo].[TrainerSchedule] ([Id], [TrainerId], [DayOfWeek], [WorkStartTime], [WorkEndTime], [IsWorkingDay], [BreakStartTime], [BreakEndTime], [ValidFrom], [ValidTo]) VALUES (4, 2, 2, CAST(N'14:00:00' AS Time), CAST(N'22:00:00' AS Time), 1, NULL, NULL, CAST(N'2024-01-01' AS Date), NULL)
+INSERT [dbo].[TrainerSchedule] ([Id], [TrainerId], [DayOfWeek], [WorkStartTime], [WorkEndTime], [IsWorkingDay], [BreakStartTime], [BreakEndTime], [ValidFrom], [ValidTo]) VALUES (5, 2, 5, CAST(N'14:00:00' AS Time), CAST(N'22:00:00' AS Time), 1, NULL, NULL, CAST(N'2024-01-01' AS Date), NULL)
+SET IDENTITY_INSERT [dbo].[TrainerSchedule] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_Clients_Phone]    Script Date: 03.03.2026 23:37:02 ******/
+ALTER TABLE [dbo].[Clients] ADD  CONSTRAINT [UQ_Clients_Phone] UNIQUE NONCLUSTERED 
+(
+	[Phone] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [UQ_GroupClassBooking]    Script Date: 03.03.2026 23:37:02 ******/
+ALTER TABLE [dbo].[GroupClassBookings] ADD  CONSTRAINT [UQ_GroupClassBooking] UNIQUE NONCLUSTERED 
+(
+	[GroupClassScheduleId] ASC,
+	[ClientId] ASC,
+	[BookingDate] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [UQ_Trainers_EmployeeId]    Script Date: 03.03.2026 23:37:02 ******/
+ALTER TABLE [dbo].[Trainers] ADD  CONSTRAINT [UQ_Trainers_EmployeeId] UNIQUE NONCLUSTERED 
+(
+	[EmployeeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Classes] ADD  DEFAULT ((1)) FOR [HasEquipment]
+GO
+ALTER TABLE [dbo].[Classes] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[ClientMemberships] ADD  DEFAULT (getdate()) FOR [PurchaseDate]
+GO
+ALTER TABLE [dbo].[ClientMemberships] ADD  DEFAULT ('Active') FOR [Status]
+GO
+ALTER TABLE [dbo].[ClientMemberships] ADD  DEFAULT ((0)) FOR [FrozenDays]
+GO
+ALTER TABLE [dbo].[Clients] ADD  DEFAULT (getdate()) FOR [RegistrationDate]
+GO
+ALTER TABLE [dbo].[Clients] ADD  DEFAULT ((0)) FOR [IsBlocked]
+GO
+ALTER TABLE [dbo].[Employees] ADD  CONSTRAINT [DF__Employees__IsAct__37A5467C]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[GroupClassBookings] ADD  DEFAULT (getdate()) FOR [BookingTime]
+GO
+ALTER TABLE [dbo].[GroupClassBookings] ADD  DEFAULT ('Confirmed') FOR [Status]
+GO
+ALTER TABLE [dbo].[GroupClasses] ADD  DEFAULT ((1)) FOR [MinParticipants]
+GO
+ALTER TABLE [dbo].[GroupClasses] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[GroupClassSchedule] ADD  DEFAULT ((1)) FOR [IsRecurring]
+GO
+ALTER TABLE [dbo].[GroupClassSchedule] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[MembershipFreezes] ADD  DEFAULT (getdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [dbo].[MembershipTypes] ADD  DEFAULT ((0)) FOR [IsPersonalAllowed]
+GO
+ALTER TABLE [dbo].[MembershipTypes] ADD  DEFAULT ((0)) FOR [IsGroupAllowed]
+GO
+ALTER TABLE [dbo].[MembershipTypes] ADD  DEFAULT ((0)) FOR [HasPool]
+GO
+ALTER TABLE [dbo].[MembershipTypes] ADD  DEFAULT ((1)) FOR [HasGym]
+GO
+ALTER TABLE [dbo].[MembershipTypes] ADD  DEFAULT ((0)) FOR [FreezeDays]
+GO
+ALTER TABLE [dbo].[MembershipTypes] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[MembershipTypes] ADD  DEFAULT (getdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [dbo].[Payments] ADD  DEFAULT (getdate()) FOR [PaymentDate]
+GO
+ALTER TABLE [dbo].[Payments] ADD  DEFAULT ('Completed') FOR [PaymentStatus]
+GO
+ALTER TABLE [dbo].[PersonalTrainings] ADD  DEFAULT ('Scheduled') FOR [Status]
+GO
+ALTER TABLE [dbo].[Trainers] ADD  DEFAULT ((0)) FOR [Rating]
+GO
+ALTER TABLE [dbo].[Trainers] ADD  DEFAULT ((1)) FOR [IsAvailableForPersonal]
+GO
+ALTER TABLE [dbo].[Trainers] ADD  DEFAULT ((10)) FOR [MaxPersonalClients]
+GO
+ALTER TABLE [dbo].[TrainerSchedule] ADD  DEFAULT ((1)) FOR [IsWorkingDay]
+GO
+ALTER TABLE [dbo].[ClientMemberships]  WITH CHECK ADD  CONSTRAINT [FK_ClientMemberships_Clients] FOREIGN KEY([ClientId])
+REFERENCES [dbo].[Clients] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ClientMemberships] CHECK CONSTRAINT [FK_ClientMemberships_Clients]
+GO
+ALTER TABLE [dbo].[ClientMemberships]  WITH CHECK ADD  CONSTRAINT [FK_ClientMemberships_Employees] FOREIGN KEY([SoldBy])
+REFERENCES [dbo].[Employees] ([Id])
+GO
+ALTER TABLE [dbo].[ClientMemberships] CHECK CONSTRAINT [FK_ClientMemberships_Employees]
+GO
+ALTER TABLE [dbo].[ClientMemberships]  WITH CHECK ADD  CONSTRAINT [FK_ClientMemberships_MembershipTypes] FOREIGN KEY([MembershipTypeId])
+REFERENCES [dbo].[MembershipTypes] ([Id])
+GO
+ALTER TABLE [dbo].[ClientMemberships] CHECK CONSTRAINT [FK_ClientMemberships_MembershipTypes]
+GO
+ALTER TABLE [dbo].[GroupClassBookings]  WITH CHECK ADD  CONSTRAINT [FK_GroupClassBookings_CancelledBy] FOREIGN KEY([CancelledBy])
+REFERENCES [dbo].[Employees] ([Id])
+GO
+ALTER TABLE [dbo].[GroupClassBookings] CHECK CONSTRAINT [FK_GroupClassBookings_CancelledBy]
+GO
+ALTER TABLE [dbo].[GroupClassBookings]  WITH CHECK ADD  CONSTRAINT [FK_GroupClassBookings_Clients] FOREIGN KEY([ClientId])
+REFERENCES [dbo].[Clients] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[GroupClassBookings] CHECK CONSTRAINT [FK_GroupClassBookings_Clients]
+GO
+ALTER TABLE [dbo].[GroupClassBookings]  WITH CHECK ADD  CONSTRAINT [FK_GroupClassBookings_GroupClassSchedule] FOREIGN KEY([GroupClassScheduleId])
+REFERENCES [dbo].[GroupClassSchedule] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[GroupClassBookings] CHECK CONSTRAINT [FK_GroupClassBookings_GroupClassSchedule]
+GO
+ALTER TABLE [dbo].[GroupClasses]  WITH CHECK ADD  CONSTRAINT [FK_GroupClasses_Classes] FOREIGN KEY([ClassId])
+REFERENCES [dbo].[Classes] ([Id])
+GO
+ALTER TABLE [dbo].[GroupClasses] CHECK CONSTRAINT [FK_GroupClasses_Classes]
+GO
+ALTER TABLE [dbo].[GroupClasses]  WITH CHECK ADD  CONSTRAINT [FK_GroupClasses_Trainers] FOREIGN KEY([TrainerId])
+REFERENCES [dbo].[Trainers] ([Id])
+GO
+ALTER TABLE [dbo].[GroupClasses] CHECK CONSTRAINT [FK_GroupClasses_Trainers]
+GO
+ALTER TABLE [dbo].[GroupClassSchedule]  WITH CHECK ADD  CONSTRAINT [FK_GroupClassSchedule_GroupClasses] FOREIGN KEY([GroupClassId])
+REFERENCES [dbo].[GroupClasses] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[GroupClassSchedule] CHECK CONSTRAINT [FK_GroupClassSchedule_GroupClasses]
+GO
+ALTER TABLE [dbo].[MembershipFreezes]  WITH CHECK ADD  CONSTRAINT [FK_MembershipFreezes_ClientMemberships] FOREIGN KEY([ClientMembershipId])
+REFERENCES [dbo].[ClientMemberships] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[MembershipFreezes] CHECK CONSTRAINT [FK_MembershipFreezes_ClientMemberships]
+GO
+ALTER TABLE [dbo].[MembershipFreezes]  WITH CHECK ADD  CONSTRAINT [FK_MembershipFreezes_Employees] FOREIGN KEY([RequestedBy])
+REFERENCES [dbo].[Employees] ([Id])
+GO
+ALTER TABLE [dbo].[MembershipFreezes] CHECK CONSTRAINT [FK_MembershipFreezes_Employees]
+GO
+ALTER TABLE [dbo].[Payments]  WITH CHECK ADD  CONSTRAINT [FK_Payments_ClientMemberships] FOREIGN KEY([ClientMembershipId])
+REFERENCES [dbo].[ClientMemberships] ([Id])
+GO
+ALTER TABLE [dbo].[Payments] CHECK CONSTRAINT [FK_Payments_ClientMemberships]
+GO
+ALTER TABLE [dbo].[Payments]  WITH CHECK ADD  CONSTRAINT [FK_Payments_Clients] FOREIGN KEY([ClientId])
+REFERENCES [dbo].[Clients] ([Id])
+GO
+ALTER TABLE [dbo].[Payments] CHECK CONSTRAINT [FK_Payments_Clients]
+GO
+ALTER TABLE [dbo].[Payments]  WITH CHECK ADD  CONSTRAINT [FK_Payments_Employees] FOREIGN KEY([ReceivedBy])
+REFERENCES [dbo].[Employees] ([Id])
+GO
+ALTER TABLE [dbo].[Payments] CHECK CONSTRAINT [FK_Payments_Employees]
+GO
+ALTER TABLE [dbo].[PersonalTrainings]  WITH CHECK ADD  CONSTRAINT [FK_PersonalTrainings_Classes] FOREIGN KEY([ClassId])
+REFERENCES [dbo].[Classes] ([Id])
+GO
+ALTER TABLE [dbo].[PersonalTrainings] CHECK CONSTRAINT [FK_PersonalTrainings_Classes]
+GO
+ALTER TABLE [dbo].[PersonalTrainings]  WITH CHECK ADD  CONSTRAINT [FK_PersonalTrainings_ClientMemberships] FOREIGN KEY([ClientMembershipId])
+REFERENCES [dbo].[ClientMemberships] ([Id])
+GO
+ALTER TABLE [dbo].[PersonalTrainings] CHECK CONSTRAINT [FK_PersonalTrainings_ClientMemberships]
+GO
+ALTER TABLE [dbo].[PersonalTrainings]  WITH CHECK ADD  CONSTRAINT [FK_PersonalTrainings_Clients] FOREIGN KEY([ClientId])
+REFERENCES [dbo].[Clients] ([Id])
+GO
+ALTER TABLE [dbo].[PersonalTrainings] CHECK CONSTRAINT [FK_PersonalTrainings_Clients]
+GO
+ALTER TABLE [dbo].[PersonalTrainings]  WITH CHECK ADD  CONSTRAINT [FK_PersonalTrainings_Payments] FOREIGN KEY([PaymentId])
+REFERENCES [dbo].[Payments] ([Id])
+GO
+ALTER TABLE [dbo].[PersonalTrainings] CHECK CONSTRAINT [FK_PersonalTrainings_Payments]
+GO
+ALTER TABLE [dbo].[PersonalTrainings]  WITH CHECK ADD  CONSTRAINT [FK_PersonalTrainings_Trainers] FOREIGN KEY([TrainerId])
+REFERENCES [dbo].[Trainers] ([Id])
+GO
+ALTER TABLE [dbo].[PersonalTrainings] CHECK CONSTRAINT [FK_PersonalTrainings_Trainers]
+GO
+ALTER TABLE [dbo].[Trainers]  WITH CHECK ADD  CONSTRAINT [FK_Trainers_Employees] FOREIGN KEY([EmployeeId])
+REFERENCES [dbo].[Employees] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Trainers] CHECK CONSTRAINT [FK_Trainers_Employees]
+GO
+ALTER TABLE [dbo].[TrainerSchedule]  WITH CHECK ADD  CONSTRAINT [FK_TrainerSchedule_Trainers] FOREIGN KEY([TrainerId])
+REFERENCES [dbo].[Trainers] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[TrainerSchedule] CHECK CONSTRAINT [FK_TrainerSchedule_Trainers]
+GO
+ALTER TABLE [dbo].[Visits]  WITH CHECK ADD  CONSTRAINT [FK_Visits_ClientMemberships] FOREIGN KEY([ClientMembershipId])
+REFERENCES [dbo].[ClientMemberships] ([Id])
+GO
+ALTER TABLE [dbo].[Visits] CHECK CONSTRAINT [FK_Visits_ClientMemberships]
+GO
+ALTER TABLE [dbo].[Visits]  WITH CHECK ADD  CONSTRAINT [FK_Visits_Clients] FOREIGN KEY([ClientId])
+REFERENCES [dbo].[Clients] ([Id])
+GO
+ALTER TABLE [dbo].[Visits] CHECK CONSTRAINT [FK_Visits_Clients]
+GO
+ALTER TABLE [dbo].[Visits]  WITH CHECK ADD  CONSTRAINT [FK_Visits_GroupClassBookings] FOREIGN KEY([GroupClassBookingId])
+REFERENCES [dbo].[GroupClassBookings] ([Id])
+GO
+ALTER TABLE [dbo].[Visits] CHECK CONSTRAINT [FK_Visits_GroupClassBookings]
+GO
+ALTER TABLE [dbo].[Visits]  WITH CHECK ADD  CONSTRAINT [FK_Visits_PersonalTrainings] FOREIGN KEY([PersonalTrainingId])
+REFERENCES [dbo].[PersonalTrainings] ([Id])
+GO
+ALTER TABLE [dbo].[Visits] CHECK CONSTRAINT [FK_Visits_PersonalTrainings]
+GO
+ALTER TABLE [dbo].[ClientMemberships]  WITH CHECK ADD  CONSTRAINT [CK_ClientMembership_Status] CHECK  (([Status]='Cancelled' OR [Status]='Expired' OR [Status]='Frozen' OR [Status]='Active'))
+GO
+ALTER TABLE [dbo].[ClientMemberships] CHECK CONSTRAINT [CK_ClientMembership_Status]
+GO
+ALTER TABLE [dbo].[GroupClassSchedule]  WITH CHECK ADD  CONSTRAINT [CK_Schedule_DayOfWeek] CHECK  (([DayOfWeek]>=(1) AND [DayOfWeek]<=(7)))
+GO
+ALTER TABLE [dbo].[GroupClassSchedule] CHECK CONSTRAINT [CK_Schedule_DayOfWeek]
+GO
+ALTER TABLE [dbo].[Payments]  WITH CHECK ADD  CONSTRAINT [CK_Payment_Method] CHECK  (([PaymentMethod]='BankTransfer' OR [PaymentMethod]='Online' OR [PaymentMethod]='Card' OR [PaymentMethod]='Cash'))
+GO
+ALTER TABLE [dbo].[Payments] CHECK CONSTRAINT [CK_Payment_Method]
+GO
+ALTER TABLE [dbo].[Trainers]  WITH CHECK ADD  CONSTRAINT [CK_Trainer_Type] CHECK  (([TrainerType]='Both' OR [TrainerType]='Personal' OR [TrainerType]='Group'))
+GO
+ALTER TABLE [dbo].[Trainers] CHECK CONSTRAINT [CK_Trainer_Type]
+GO
+ALTER TABLE [dbo].[TrainerSchedule]  WITH CHECK ADD  CONSTRAINT [CK_TrainerSchedule_DayOfWeek] CHECK  (([DayOfWeek]>=(1) AND [DayOfWeek]<=(7)))
+GO
+ALTER TABLE [dbo].[TrainerSchedule] CHECK CONSTRAINT [CK_TrainerSchedule_DayOfWeek]
+GO
+ALTER TABLE [dbo].[Visits]  WITH CHECK ADD  CONSTRAINT [CK_Visit_Type] CHECK  (([VisitType]='Gym' OR [VisitType]='Personal' OR [VisitType]='Group'))
+GO
+ALTER TABLE [dbo].[Visits] CHECK CONSTRAINT [CK_Visit_Type]
+GO
